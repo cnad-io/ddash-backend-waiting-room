@@ -1,0 +1,42 @@
+{
+  "name": "waiting-room",
+  "version": "1.0.0",
+  "description": "WSAO Backend para el función de waiting room.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js | node_modules/.bin/pino-pretty -c -l",
+    "test": "eslint ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cnad-io/wsao-1-back.git"
+  },
+  "keywords": [
+    "nodejs",
+    "socketio",
+    "websocket"
+  ],
+  "author": "CNAD Team - Red Hat LATAM",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cnad-io/wsao-1-back/issues"
+  },
+  "homepage": "https://github.com/cnad-io/wsao-1-back#readme",
+  "dependencies": {
+    "bluebird": "^3.5.5",
+    "pino": "^5.12.6",
+    "pino-pretty": "^3.2.0",
+    "socket.io": "^2.2.0",
+    "socket.io-redis": "^5.2.0",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "husky": "^2.4.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test"
+    }
+  }
+}

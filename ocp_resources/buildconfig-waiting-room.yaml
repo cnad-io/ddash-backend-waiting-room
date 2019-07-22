@@ -1,0 +1,43 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftWebConsole
+  labels:
+    app: waiting-room
+  name: waiting-room
+spec:
+  failedBuildsHistoryLimit: 5
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: waiting-room:latest
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    contextDir: waiting-room
+    git:
+      ref: develop
+      uri: https://github.com/cnad-io/wsao-1-back.git
+    type: Git
+  strategy:
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: nodejs:10
+        namespace: openshift
+    type: Source
+  successfulBuildsHistoryLimit: 5
+  triggers:
+  - imageChange:
+      lastTriggeredImageID: docker-registry.default.svc:5000/openshift/nodejs@sha256:bce9d648821108fb7046b33b6f3f1b49607fd44a242de2a6a0a538f56e353153
+    type: ImageChange
+  - type: ConfigChange
+  - generic:
+      secret: e7a072786ee7c003
+    type: Generic
+  - github:
+      secret: 88c7eeffb3b3f0db
+    type: GitHub
