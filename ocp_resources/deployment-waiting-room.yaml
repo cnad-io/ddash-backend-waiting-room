@@ -29,8 +29,7 @@ spec:
         deploymentconfig: waiting-room
     spec:
       containers:
-      - image: docker-registry.default.svc:5000/wsao/waiting-room
-        imagePullPolicy: Always
+      - imagePullPolicy: Always
         name: waiting-room
         ports:
         - containerPort: 8080
@@ -54,6 +53,5 @@ spec:
       from:
         kind: ImageStreamTag
         name: waiting-room:latest
-        namespace: wsao
     type: ImageChange
   - type: ConfigChange

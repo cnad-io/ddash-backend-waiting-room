@@ -44,6 +44,8 @@ var updateRoom = function () {
     });
     adminSocket.emit(events.server.out.createRoom, {});
   }
+  logger.info('Player(s) in room' + room.length);
+
   io.to('waiting')
   .emit(
     events.public.out.news,
