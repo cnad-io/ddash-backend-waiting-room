@@ -10,6 +10,8 @@ var events = require('./models/events');
 var states = require('./models/states');
 var roomController = require('./controllers/room');
 
+var uuidv1 = require('uuid/v1');
+
 // TODO: Reemplazar despues por administración de usuarios
 var usersInRoom = [];
 
@@ -44,7 +46,7 @@ var updateRoom = function () {
   logger.debug('N° Players in Room', room.length, maxPlayers);
   if (room.length >= maxPlayers) {
     logger.info('Ready to create room');
-    var response =  { state: states.assigned , roomId: data.roomId, playerList: usersInRoom };
+    var response =  { state: states.assigned , roomId: uuidv1(), playerList: usersInRoom };
     logger.debug('Room', response);
     io.to('waiting').emit(events.public.out.roomAssigned, response);
     usersInRoom = [];
