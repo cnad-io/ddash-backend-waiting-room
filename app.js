@@ -41,6 +41,7 @@ var updateRoom = function () {
   if (!room) {
     return;
   }
+  logger.debug('N° Players in Room', room.length);
   if (room.length === parseInt(maxPlayers, 0)) {
     io.to('waiting')
     .emit(events.public.out.news, {
