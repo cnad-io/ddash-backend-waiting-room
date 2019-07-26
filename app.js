@@ -2,7 +2,7 @@
 
 var app = require('http').createServer();
 var io = require('socket.io')(app);
-var ioOut = require('socket.io-client');
+// var ioOut = require('socket.io-client');
 var redis = require('socket.io-redis');
 var logger = require('pino')({ 'level': process.env.LOG_LEVEL || 'info' });
 
@@ -44,11 +44,8 @@ var updateRoom = function () {
   logger.debug('N° Players in Room', room.length, maxPlayers);
   if (room.length >= maxPlayers) {
     logger.info('Ready to create room');
-    io.to('waiting')
-    .emit(events.public.out.news, {
-      info: 'creando game-room'
-    });
     var response =  { state: states.assigned , roomId: data.roomId, playerList: usersInRoom };
+    logger.debug('Room', response);
     io.to('waiting').emit(events.public.out.roomAssigned, response);
     usersInRoom = [];
   }
@@ -90,18 +87,18 @@ io.on('connection', function (socket) {
   });
 });
 
-logger.info('Starting admin socket.');
-var adminURL = process.env.ADMIN_URL || 'http://game-room-internal:8081';
-logger.info('Admin socket URL.', adminURL);
-var adminSocket = ioOut(adminURL);
+// logger.info('Starting admin socket.');
+// var adminURL = process.env.ADMIN_URL || 'http://game-room-internal:8081';
+// logger.info('Admin socket URL.', adminURL);
+// var adminSocket = ioOut(adminURL);
 
-adminSocket.on(events.server.in.newRoom, function (data) {
-  logger.info('New room requested.');
-  logger.debug('New room requested data.', data);
-  var response =  { state: states.assigned , roomId: data.roomId, playerList: usersInRoom };
-  io.to('waiting').emit(events.public.out.roomAssigned, response);
-  io.to('waiting').emit(events.public.out.news, {
-    info: 'game-room: ' + data.roomId
-  });
-  usersInRoom = [];
-});
+// adminSocket.on(events.server.in.newRoom, function (data) {
+//   logger.info('New room requested.');
+//   logger.debug('New room requested data.', data);
+//   var response =  { state: states.assigned , roomId: data.roomId, playerList: usersInRoom };
+//   io.to('waiting').emit(events.public.out.roomAssigned, response);
+//   io.to('waiting').emit(events.public.out.news, {
+//     info: 'game-room: ' + data.roomId
+//   });
+//   usersInRoom = [];
+// });
