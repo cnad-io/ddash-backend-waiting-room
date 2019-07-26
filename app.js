@@ -31,6 +31,7 @@ io.origins('*:*');
 
 var updateRoom = function () {
   var room = io.sockets.adapter.rooms.waiting;
+  logger.debug('Players in room', usersInRoom);
   io.to('waiting')
   .emit(
     events.public.out.playersRoom,
