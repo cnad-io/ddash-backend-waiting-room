@@ -73,7 +73,7 @@ io.on('connection', function (socket) {
       socket.emit(events.public.out.joinResponse,
         { playerId: socket.id, nickname: data.nickname });
         logger.info('Player joined.');
-      usersInRoom.push({ playerId: socket.id, nickname: data.nickname });
+      usersInRoom.push(data);
       io.to('waiting')
         .emit(events.public.out.playerJoined, data.nickname);
       updateRoom();
