@@ -41,16 +41,19 @@ var updateRoom = function () {
   if (!room) {
     return;
   }
-  logger.debug('N° Players in Room', room.length);
-  if (room.length == maxPlayers) {
+  logger.debug('N° Players in Room', room.length, maxPlayers);
+  if (room.length >= maxPlayers) {
+    logger.info('Ready to create room');
     io.to('waiting')
     .emit(events.public.out.news, {
       info: 'creando game-room'
     });
-    adminSocket.emit(events.server.out.createRoom, {});
+    io.to('waiting').emit(events.public.out.roomAssigned, response);
+    io.to('waiting').emit(events.public.out.news, {
+      info: 'game-room: ' + data.roomId
+    });
+    usersInRoom = [];
   }
-  logger.info('Player(s) in room' + room.length);
-
   io.to('waiting')
   .emit(
     events.public.out.news,
