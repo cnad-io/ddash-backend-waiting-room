@@ -10,6 +10,9 @@ var events = require('./models/events');
 var states = require('./models/states');
 var roomController = require('./controllers/room');
 
+// TODO: Reemplazar despues por administración de usuarios
+var usersInRoom = [];
+
 logger.info('Starting server with port 8080.');
 app.listen(8080);
 
@@ -31,7 +34,7 @@ var updateRoom = function () {
   io.to('waiting')
   .emit(
     events.public.out.playersRoom,
-    room
+    usersInRoom
   );
   var maxPlayers = process.env.MAX_PLAYER_PER_ROOM || '4';
   if (!room) {
@@ -69,6 +72,7 @@ io.on('connection', function (socket) {
       socket.emit(events.public.out.joinResponse,
         { playerId: socket.id, nickname: data.nickname });
         logger.info('Player joined.');
+      usersInRoom.push({ playerId: socket.id, nickname: data.nickname });
       io.to('waiting')
         .emit(events.public.out.playerJoined, data.nickname);
       updateRoom();
@@ -91,9 +95,10 @@ var adminSocket = ioOut(adminURL);
 adminSocket.on(events.server.in.newRoom, function (data) {
   logger.info('New room requested.');
   logger.debug('New room requested data.', data);
-  var response =  { state: states.assigned , roomId: data.roomId }
+  var response =  { state: states.assigned , roomId: data.roomId, playerList: usersInRoom };
   io.to('waiting').emit(events.public.out.roomAssigned, response);
   io.to('waiting').emit(events.public.out.news, {
     info: 'game-room: ' + data.roomId
   });
+  usersInRoom = [];
 });
