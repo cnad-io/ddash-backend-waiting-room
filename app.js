@@ -48,10 +48,8 @@ var updateRoom = function () {
     .emit(events.public.out.news, {
       info: 'creando game-room'
     });
+    var response =  { state: states.assigned , roomId: data.roomId, playerList: usersInRoom };
     io.to('waiting').emit(events.public.out.roomAssigned, response);
-    io.to('waiting').emit(events.public.out.news, {
-      info: 'game-room: ' + data.roomId
-    });
     usersInRoom = [];
   }
   io.to('waiting')
