@@ -1,0 +1,64 @@
+---
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+  template: pipeline-template
+  system: dino-dush
+  app: waiting-room
+  kind: nodejs
+metadata:
+  name: pipeline-template
+objects:
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      build: ${APP_NAME}
+      app: ${APP_NAME}
+      system: dino-dush
+      kind: nodejs
+    name: ${APP_NAME}
+  spec:
+    nodeSelector: {}
+    output: {}
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      contextDir: ${GIT_CONTEXT_DIR}
+      git:
+        ref: ${GIT_BRANCH}
+        uri: ${GIT_URL}
+      type: Git
+      sourceSecret:
+        name: "${SOURCE_SECRET}"
+    strategy:
+      jenkinsPipelineStrategy:
+        jenkinsfilePath: Jenkinsfile
+      type: JenkinsPipeline
+    triggers:
+    - github:
+        secret: ${GITHUB_SECRET}
+      type: GitHub
+    - generic:
+        secret: ${GENERIC_SECRET}
+      type: Generic
+parameters:
+- name: APP_NAME
+  required: true
+  value: waiting-room
+- name: GIT_URL
+  required: true
+  value: https://github.com/cnad-io/ddash-backend-waiting-room.git
+- name: GIT_BRANCH
+  required: true
+  value: master
+- name: GIT_CONTEXT_DIR
+- name: GITHUB_SECRET
+  from: '[a-zA-Z0-9]{40}'
+  generate: expression
+- name: GENERIC_SECRET
+  from: '[a-zA-Z0-9]{40}'
+  generate: expression
+- name: SOURCE_SECRET
+  value: git-auth

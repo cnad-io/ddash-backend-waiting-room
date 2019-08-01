@@ -1,0 +1,90 @@
+---
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+  template: build-template
+  system: dino-dush
+  app: waiting-room
+  kind: nodejs
+metadata:
+  name: build-template
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: '${APP_NAME}'
+      system: dino-dush
+      kind: nodejs
+    name: '${APP_NAME}'
+  spec: {}
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      app: ${APP_NAME}
+      system: dino-dush
+      kind: nodejs
+    name: ${APP_NAME}
+  spec:
+    failedBuildsHistoryLimit: 5
+    nodeSelector: null
+    postCommit: {}
+    output:
+      to:
+        kind: ImageStreamTag
+        name: '${APP_NAME}:${BUILD_TAG}'
+    resources:
+      limits:
+        cpu: '${CPU_LIMIT}'
+        memory: '${MEMORY_LIMIT}'
+      requests:
+        cpu: '${CPU_REQUEST}'
+        memory: '${MEMORY_REQUEST}'
+    runPolicy: Serial
+    source:
+      contextDir: ${GIT_CONTEXT_DIR}
+      git:
+        ref: ${GIT_BRANCH}
+        uri: '${GIT_URL}'
+      type: Git
+      sourceSecret:
+        name: "${SOURCE_SECRET}"
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: 'nodejs:10'
+          namespace: openshift
+      type: Source
+    successfulBuildsHistoryLimit: 5
+    triggers: []
+  status: {}
+parameters:
+- name: CPU_REQUEST
+  required: true
+  value: 100m
+- name: CPU_LIMIT
+  required: true
+  value: "500m"
+- name: MEMORY_REQUEST
+  required: true
+  value: 100Mi
+- name: MEMORY_LIMIT
+  required: true
+  value: 500Mi
+- name: APP_NAME
+  required: true
+  value: waiting-room
+- name: BUILD_TAG
+  required: true
+  value: latest
+- name: GIT_URL
+  required: true
+  value: https://github.com/cnad-io/ddash-backend-waiting-room.git
+- name: GIT_BRANCH
+  required: true
+  value: master
+- name: GIT_CONTEXT_DIR
+- name: SOURCE_SECRET
+  value: git-auth

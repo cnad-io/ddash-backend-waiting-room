@@ -1,0 +1,183 @@
+---
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+  template: deploy-template
+  system: dino-dush
+  app: waiting-room
+  kind: nodejs
+metadata:
+  name: deploy-template
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      system: dino-dush
+      app: ${APP_NAME}
+      kind: nodejs
+    name: ${APP_NAME}
+  spec: {}
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    labels:
+      system: dino-dush
+      app: ${APP_NAME}
+      kind: nodejs
+    name: ${APP_NAME}
+  spec:
+    port:
+      targetPort: 8080-ws
+    to:
+      kind: Service
+      name: ${APP_NAME}
+      weight: 100
+    wildcardPolicy: None
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      system: dino-dush
+      app: ${APP_NAME}
+      kind: nodejs
+    name: ${APP_NAME}
+  spec:
+    ports:
+    - name: 8080-ws
+      port: 8080
+    - name: 8081-ws
+      port: 8081
+    selector:
+      system: dino-dush
+      app: ${APP_NAME}
+      kind: nodejs
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      system: dino-dush
+      app: ${APP_NAME}
+      kind: nodejs
+    annotations:
+      template.alpha.openshift.io/wait-for-ready: "true"
+    name: ${APP_NAME}
+  spec:
+    paused: true
+    revisionHistoryLimit: 10
+    replicas: 1
+    selector:
+      system: dino-dush
+      app: ${APP_NAME}
+      kind: nodejs
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources:
+        limits:
+          cpu: 100m
+          memory: 100Mi
+        requests:
+          cpu: 50m
+          memory: 50Mi
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          system: dino-dush
+          app: ${APP_NAME}
+          kind: nodejs
+      spec:
+        containers:
+        - env:
+            - name: REDIS_ADAPTER_URL
+              value: ${REDIS_ADAPTER_URL}
+          image: ' '
+          imagePullPolicy: Always
+          livenessProbe:
+            initialDelaySeconds: 20
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: ${APP_NAME}
+          ports:
+          - name: 8080-ws
+            containerPort: 8080
+            protocol: TCP
+          - name: 8081-ws
+            containerPort: 8081
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: ${CPU_LIMIT}
+              memory: ${MEMORY_LIMIT}
+            requests:
+              cpu: ${CPU_REQUEST}
+              memory: ${MEMORY_REQUEST}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers: []
+  status: {}
+- apiVersion: v1
+  kind: RoleBinding
+  metadata:
+    name: edit
+  roleRef:
+    name: edit
+  subjects:
+  - kind: ServiceAccount
+    name: jenkins
+    namespace: "${PIPELINES_NAMESPACE}"
+  userNames:
+  - system:serviceaccount:${PIPELINES_NAMESPACE}:${DEPLOYER_USER}
+parameters:
+- name: CPU_REQUEST
+  required: true
+  value: 50m
+- name: CPU_LIMIT
+  required: true
+  value: 100m
+- name: MEMORY_REQUEST
+  required: true
+  value: 100Mi
+- name: MEMORY_LIMIT
+  required: true
+  value: 200Mi
+- name: APP_NAME
+  required: true
+  value: waiting-room
+- name: REDIS_ADAPTER_URL
+  required: true
+  value: redis-waiting-room
+- name: PIPELINES_NAMESPACE
+  required: true
+- name: DEPLOYER_USER
+  required: true
+  value: jenkins

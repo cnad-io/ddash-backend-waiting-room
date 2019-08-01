@@ -1,0 +1,10 @@
+# CPU_REQUEST=
+# CPU_LIMIT=
+# MEMORY_REQUEST=
+# MEMORY_LIMIT=
+APP_NAME=waiting-room
+# BUILD_TAG=
+GIT_URL=https://github.com/cnad-io/ddash-backend-waiting-room.git
+GIT_BRANCH=master
+# GIT_CONTEXT_DIR=
+SOURCE_SECRET=git-auth

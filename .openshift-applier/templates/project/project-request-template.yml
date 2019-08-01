@@ -1,0 +1,20 @@
+---
+apiVersion: v1
+kind: Template
+labels:
+  template: project-request-template
+metadata:
+  name: ${PROJECT_NAME}
+objects:
+- apiVersion: project.openshift.io/v1
+  kind: ProjectRequest
+  metadata:
+    name: ${PROJECT_NAME}
+  description: '${PROJECT_DESCRIPTION}'
+  displayName: '${PROJECT_DISPLAY_NAME}'
+parameters:
+- name: PROJECT_NAME
+  required: true
+- name: PROJECT_DISPLAY_NAME
+  required: true
+- name: PROJECT_DESCRIPTION

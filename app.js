@@ -90,7 +90,7 @@ io.on('connection', function (socket) {
 });
 
 // logger.info('Starting admin socket.');
-// var adminURL = process.env.ADMIN_URL || 'http://game-room-internal:8081';
+// var adminURL = process.env.ADMIN_URL || 'http://waiting-room-internal:8081';
 // logger.info('Admin socket URL.', adminURL);
 // var adminSocket = ioOut(adminURL);
 
@@ -100,7 +100,7 @@ io.on('connection', function (socket) {
 //   var response =  { state: states.assigned , roomId: data.roomId, playerList: usersInRoom };
 //   io.to('waiting').emit(events.public.out.roomAssigned, response);
 //   io.to('waiting').emit(events.public.out.news, {
-//     info: 'game-room: ' + data.roomId
+//     info: 'waiting-room: ' + data.roomId
 //   });
 //   usersInRoom = [];
 // });

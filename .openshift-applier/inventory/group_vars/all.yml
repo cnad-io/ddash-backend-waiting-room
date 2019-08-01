@@ -1,0 +1,77 @@
+---
+openshift_cluster_content:
+- object: base
+  content:
+    - name: non-prod
+      template: "{{ inventory_dir }}/../templates/project/project-request-template.yml"
+      params: "{{ inventory_dir }}/../params/project/{{ non_prod_namespace }}"
+      action: create
+      tags:
+      - project-request
+      - base
+    - name: prod
+      template: "{{ inventory_dir }}/../templates/project/project-request-template.yml"
+      params: "{{ inventory_dir }}/../params/project/{{ prod_namespace }}"
+      action: create
+      tags:
+      - project-request
+      - base
+- object: build
+  content:
+    - name: secret
+      template: "{{ inventory_dir }}/../templates/waiting-room/git-secret-template.yml"
+      params_from_vars:
+        SECRET_NAME: git-auth
+        USERNAME: "{{ encrypted_password | b64encode }}"
+        PASSWORD: "{{ encrypted_password | b64encode }}"
+      namespace: "{{ non_prod_namespace }}"
+      tags:
+      - waiting-room
+      - secret
+      - build
+    - name: pipeline-cd
+      template: "{{ inventory_dir }}/../templates/waiting-room/pipeline-template.yml"
+      params: "{{ inventory_dir }}/../params/waiting-room/pipeline-cd"
+      namespace: "{{ non_prod_namespace }}"
+      tags:
+      - waiting-room
+      - pipeline-cd
+      - build
+    - name: unique-build
+      template: "{{ inventory_dir }}/../templates/waiting-room/build-source-template.yml"
+      params: "{{ inventory_dir }}/../params/waiting-room/build"
+      namespace: "{{ non_prod_namespace }}"
+      tags:
+      - waiting-room
+      - unique-build
+      - build
+- object: deploy-non-prod
+  content:
+    - name: service
+      template: "{{ inventory_dir }}/../templates/waiting-room/deploy-template.yml"
+      params: "{{ inventory_dir }}/../params/waiting-room/deploy-non-prod"
+      namespace: "{{ non_prod_namespace }}"
+      tags:
+      - waiting-room
+      - service
+      - non-prod
+- object: deploy-prod
+  content:
+    - name: service-blue
+      template: "{{ inventory_dir }}/../templates/waiting-room/deploy-bg-template.yml"
+      params: "{{ inventory_dir }}/../params/waiting-room/deploy-prod-blue"
+      namespace: "{{ prod_namespace }}"
+      tags:
+      - waiting-room
+      - blue
+      - service
+      - prod
+    - name: service-green
+      template: "{{ inventory_dir }}/../templates/waiting-room/deploy-bg-template.yml"
+      params: "{{ inventory_dir }}/../params/waiting-room/deploy-prod-green"
+      namespace: "{{ prod_namespace }}"
+      tags:
+      - waiting-room
+      - green
+      - service
+      - prod

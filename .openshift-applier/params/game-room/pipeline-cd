@@ -1,0 +1,5 @@
+APP_NAME=waiting-room-cd
+GIT_URL=https://github.com/cnad-io/ddash-backend-waiting-room.git
+GIT_BRANCH=master
+# GIT_CONTEXT_DIR=
+SOURCE_SECRET=git-auth
