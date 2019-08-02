@@ -5,7 +5,9 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js | node_modules/.bin/pino-pretty -c -l",
-    "test": "eslint ."
+    "lint": "eslint .",
+    "test": "LOG_LEVEL=error node_modules/.bin/mocha --timeout 5000 --exit tests",
+    "test:junit-report": "LOG_LEVEL=error node_modules/.bin/mocha -c -u qunit --timeout 5000 --exit --reporter mocha-junit-reporter --reporter-options mochaFile=./report.xml tests"
   },
   "repository": {
     "type": "git",
@@ -31,12 +33,17 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
     "eslint": "^5.16.0",
-    "husky": "^2.4.1"
+    "husky": "^2.4.1",
+    "mocha": "^6.2.0",
+    "mocha-junit-reporter": "^1.23.1",
+    "socket.io-client": "^2.2.0"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm test"
+      "pre-commit": "npm run lint"
     }
   }
 }

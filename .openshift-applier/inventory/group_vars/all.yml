@@ -55,6 +55,14 @@ openshift_cluster_content:
       - waiting-room
       - service
       - non-prod
+    - name: cache
+      template: "{{ inventory_dir }}/../templates/waiting-room/redis-template.yml"
+      params: "{{ inventory_dir }}/../params/waiting-room/redis"
+      namespace: "{{ non_prod_namespace }}"
+      tags:
+      - waiting-room
+      - cache
+      - non-prod
 - object: deploy-prod
   content:
     - name: service-blue
@@ -74,4 +82,12 @@ openshift_cluster_content:
       - waiting-room
       - green
       - service
+      - prod
+    - name: cache
+      template: "{{ inventory_dir }}/../templates/waiting-room/redis-template.yml"
+      params: "{{ inventory_dir }}/../params/waiting-room/redis"
+      namespace: "{{ prod_namespace }}"
+      tags:
+      - waiting-room
+      - cache
       - prod

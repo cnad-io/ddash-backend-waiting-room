@@ -1,6 +1,8 @@
 "use strict";
 
-var logger = require('pino')({ 'level': process.env.LOG_LEVEL || 'info' });
+var logger = require('pino')({
+  'level': process.env.LOG_LEVEL || 'info'
+});
 
 var validate = function (userName) {
   logger.info('Validating player info');

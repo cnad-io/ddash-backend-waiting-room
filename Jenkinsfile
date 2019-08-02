@@ -25,17 +25,10 @@ pipeline {
       steps {
         script {
           echo 'Get active mode'
-          try {
-            ACTIVE_MODE = sh (
-              script : 'oc get pod --selector=app=${APP_NAME} -o jsonpath="{ .items[0].metadata.labels.mode }" -n ${PROD_NAMESPACE}',
-              returnStdout: true
-            ).trim()
-            echo ACTIVE_MODE
-          } catch (error) {}
-          if ("${ACTIVE_MODE}" == '') {
-            env.ACTIVE_MODE = 'blue'
-          }
-          env.ACTIVE_MODE = ACTIVE_MODE
+          env.ACTIVE_MODE = sh (
+            script : 'oc get route ${APP_NAME} -o jsonpath="{ .spec.to.name }" -n ${PROD_NAMESPACE}',
+            returnStdout: true
+          ).trim().replace("${APP_NAME}-", "")
           echo "Active mode: ${ACTIVE_MODE}"
           if ("${ACTIVE_MODE}" == 'blue') {
             env.NOT_ACTIVE_MODE = 'green'
@@ -53,11 +46,17 @@ pipeline {
         }
       }
       steps {
-        echo 'Running build and tests'
+        echo 'Running install and audit'
         sh '''
           npm install
           npm audit
         '''
+        echo 'Running lint and tests'
+        sh '''
+          npm run lint
+          npm run test:junit-report
+        '''
+
         echo 'Generating container image'
         sh '''
           oc patch bc ${APP_NAME} -p "{\\"spec\\":{\\"output\\":{\\"to\\":{\\"kind\\":\\"ImageStreamTag\\",\\"name\\":\\"${APP_NAME}:${JENKINS_TAG}\\"}}}}" -n ${NON_PROD_NAMESPACE}
@@ -65,9 +64,9 @@ pipeline {
         '''
       }
       post {
-        // always {
-        //   junit 'user-management/target/surefire-reports/TEST-*.xml'
-        // }
+        always {
+          junit 'report.xml'
+        }
         failure {
           echo "FAILURE"
         }
