@@ -19,21 +19,28 @@ var io = require('socket.io')(app);
 logger.info('Setting acepted origins.');
 io.origins('*:*');
 
-var redis = require('socket.io-redis');
+var redisAdapter = require('socket.io-redis');
+var redis = require('redis');
 
 if (process.env.REDIS_ADAPTER_URL) {
   logger.info('Integrating with Redis.');
-  var redisConnection = {
-    host: process.env.REDIS_ADAPTER_URL || 'redis-waiting-room',
-    port: 6379
-  };
-  logger.debug('Redis configuration.', redisConnection);
-  io.adapter(redis(redisConnection));
+  var pub = redis.createClient(
+    process.env.REDIS_ADAPTER_PORT || 6379,
+    process.env.REDIS_ADAPTER_URL || 'redis-waiting-room', {
+    'auth_pass': process.env.REDIS_ADAPTER_PASS || 'pwd'
+  });
+  var sub = redis.createClient(
+    process.env.REDIS_ADAPTER_PORT || 6379,
+    process.env.REDIS_ADAPTER_URL || 'redis-waiting-room', {
+    'auth_pass': process.env.REDIS_ADAPTER_PASS || 'pwd'
+  });
+  logger.debug('Redis configuration.', pub, sub);
+  io.adapter(redisAdapter({ pubClient: pub, subClient: sub }));
 }
 
 require('./socket')(io);
 
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 8080;
 
 app.listen(port, function () {
   logger.info('Server started and ready to receive requests');

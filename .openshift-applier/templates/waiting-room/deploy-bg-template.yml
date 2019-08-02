@@ -101,6 +101,11 @@ objects:
         - env:
             - name: REDIS_ADAPTER_URL
               value: ${REDIS_ADAPTER_URL}
+            - name: REDIS_ADAPTER_PASS
+              valueFrom:
+                secretKeyRef:
+                  key: database-password
+                  name: redis-waiting-room
           image: ' '
           imagePullPolicy: Always
           livenessProbe:
