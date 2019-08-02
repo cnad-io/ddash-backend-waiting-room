@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node app.js | node_modules/.bin/pino-pretty -c -l",
     "lint": "eslint .",
-    "test": "LOG_LEVEL=error node_modules/.bin/mocha --timeout 5000 --exit tests",
-    "test:junit-report": "LOG_LEVEL=error node_modules/.bin/mocha -c -u qunit --timeout 5000 --exit --reporter mocha-junit-reporter --reporter-options mochaFile=./report.xml tests"
+    "test": "LOG_LEVEL=error node_modules/.bin/mocha -c --timeout 5000 --exit tests",
+    "test:junit-report": "LOG_LEVEL=error node_modules/.bin/mocha --timeout 5000 --exit --reporter mocha-junit-reporter --reporter-options mochaFile=./report.xml tests"
   },
   "repository": {
     "type": "git",

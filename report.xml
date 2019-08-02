@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="0.036" tests="4" failures="0">
+  <testsuite name="Root Suite" timestamp="2019-08-02T02:15:33" tests="0" failures="0" time="0">
+  </testsuite>
+  <testsuite name="Health Check" timestamp="2019-08-02T02:15:33" tests="0" file="/home/caio/Documentos/CNAD/ddash-backend-waiting-room/tests/healthcheck.js" failures="0" time="0">
+  </testsuite>
+  <testsuite name="When is requested the state of the service" timestamp="2019-08-02T02:15:33" tests="1" file="/home/caio/Documentos/CNAD/ddash-backend-waiting-room/tests/healthcheck.js" failures="0" time="0.006">
+    <testcase name="Health Check When is requested the state of the service Should return a message OK" time="0.006" classname="Should return a message OK">
+    </testcase>
+  </testsuite>
+  <testsuite name="Waiting Room" timestamp="2019-08-02T02:15:33" tests="0" file="/home/caio/Documentos/CNAD/ddash-backend-waiting-room/tests/waiting-room.js" failures="0" time="0">
+  </testsuite>
+  <testsuite name="When a user is joined" timestamp="2019-08-02T02:15:33" tests="2" file="/home/caio/Documentos/CNAD/ddash-backend-waiting-room/tests/waiting-room.js" failures="0" time="0.025">
+    <testcase name="Waiting Room When a user is joined Should respond information of the joined user" time="0.021" classname="Should respond information of the joined user">
+    </testcase>
+    <testcase name="Waiting Room When a user is joined Should emit a list of the players in room" time="0.004" classname="Should emit a list of the players in room">
+    </testcase>
+  </testsuite>
+  <testsuite name="When the waiting room has the limit of players (Testing with 2)" timestamp="2019-08-02T02:15:33" tests="1" file="/home/caio/Documentos/CNAD/ddash-backend-waiting-room/tests/waiting-room.js" failures="0" time="0.005">
+    <testcase name="Waiting Room When the waiting room has the limit of players (Testing with 2) Should emit to the assigned players their game room information" time="0.005" classname="Should emit to the assigned players their game room information">
+    </testcase>
+  </testsuite>
+</testsuites>
