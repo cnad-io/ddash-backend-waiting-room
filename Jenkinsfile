@@ -46,10 +46,9 @@ pipeline {
         }
       }
       steps {
-        echo 'Running install and audit'
+        echo 'Running install'
         sh '''
           npm install
-          npm audit
         '''
         echo 'Running lint and tests'
         sh '''
