@@ -4,4 +4,4 @@
 # MEMORY_LIMIT=
 APP_NAME=waiting-room
 REDIS_ADAPTER_URL=redis-waiting-room
-PIPELINES_NAMESPACE=dino-dush-non-prod
+PIPELINES_NAMESPACE=dino-dash-non-prod

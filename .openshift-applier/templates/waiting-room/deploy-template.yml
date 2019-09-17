@@ -3,7 +3,7 @@ apiVersion: template.openshift.io/v1
 kind: Template
 labels:
   template: deploy-template
-  system: dino-dush
+  system: dino-dash
   app: waiting-room
   kind: nodejs
 metadata:
@@ -13,7 +13,7 @@ objects:
   kind: ImageStream
   metadata:
     labels:
-      system: dino-dush
+      system: dino-dash
       app: ${APP_NAME}
       kind: nodejs
     name: ${APP_NAME}
@@ -22,7 +22,7 @@ objects:
   kind: Route
   metadata:
     labels:
-      system: dino-dush
+      system: dino-dash
       app: ${APP_NAME}
       kind: nodejs
     name: ${APP_NAME}
@@ -38,7 +38,7 @@ objects:
   kind: Service
   metadata:
     labels:
-      system: dino-dush
+      system: dino-dash
       app: ${APP_NAME}
       kind: nodejs
     name: ${APP_NAME}
@@ -49,14 +49,14 @@ objects:
     - name: 8081-ws
       port: 8081
     selector:
-      system: dino-dush
+      system: dino-dash
       app: ${APP_NAME}
       kind: nodejs
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
     labels:
-      system: dino-dush
+      system: dino-dash
       app: ${APP_NAME}
       kind: nodejs
     annotations:
@@ -67,7 +67,7 @@ objects:
     revisionHistoryLimit: 10
     replicas: 1
     selector:
-      system: dino-dush
+      system: dino-dash
       app: ${APP_NAME}
       kind: nodejs
     strategy:
@@ -90,7 +90,7 @@ objects:
       metadata:
         creationTimestamp: null
         labels:
-          system: dino-dush
+          system: dino-dash
           app: ${APP_NAME}
           kind: nodejs
       spec:

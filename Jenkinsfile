@@ -3,8 +3,8 @@ pipeline {
     label "master"
   }
   environment {
-    NON_PROD_NAMESPACE = "dino-dush-non-prod"
-    PROD_NAMESPACE = "dino-dush-prod"
+    NON_PROD_NAMESPACE = "dino-dash-non-prod"
+    PROD_NAMESPACE = "dino-dash-prod"
     APP_NAME = "waiting-room"
     JENKINS_TAG = "v${BUILD_NUMBER}".replace("/", "-")
   }

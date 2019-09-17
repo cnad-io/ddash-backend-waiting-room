@@ -6,37 +6,36 @@ var logger = require('pino')({
 
 var Promise = require('bluebird');
 var player = require('./player');
-var uuidv1 = require('uuid/v1');
+//var uuidv1 = require('uuid/v1');
 var states = require('../models/states');
-var Client = require('node-rest-client').Client;
- 
-var roomManagementRestClient = new Client();
+var RestClient = require('node-rest-client').Client;
 
-
+var roomManagementRestClient = new RestClient();
 var roomManagement = process.env.ROOM_MANAGEMENT_URL || 'room-management'
 
-
+/* eslint-disable no-template-curly-in-string */
 roomManagementRestClient.registerMethod("getRoom", roomManagement+"/api/room/${roomId}", "GET");
 roomManagementRestClient.registerMethod("createRoom", roomManagement+"/api/create", "POST");
 roomManagementRestClient.registerMethod("addUserToRoom", roomManagement+"/api/room/${roomId}/addUser/${userId}", "PUT");
 roomManagementRestClient.registerMethod("removeUserFromRoom", roomManagement+"/api/room/${roomId}/removeUser/${userId}", "DELETE");
 roomManagementRestClient.registerMethod("getUsersInRoom", roomManagement+"/api/room/${roomId}/users", "GET");
 
-var tempRoomId;
+var tempRoomId = null;
 var usersInRoom = [];
 
 var get = function () {
   logger.info('Get room requested');
   return new Promise(function (resolve) {
-   if(tempRoomId){
+   if (tempRoomId){
       var argsGetusersInRoom = {
         path: { roomId: tempRoomId },
         parameters: { },
         headers: { },
         data: ""
       };
-      roomManagementRestClient.methods.getUsersInRoom(argsGetusersInRoom, function (data, response) {
-          usersInRoom = data;
+      roomManagementRestClient.methods.getUsersInRoom(argsGetusersInRoom, function (dataUsersInRoom) {
+
+          usersInRoom = dataUsersInRoom;
           resolve({
             state: states.assigned,
             roomId: tempRoomId,
@@ -44,23 +43,24 @@ var get = function () {
           });
       });
     } else {
-      var args = {
+      var argsCreateRoom = {
         path: { },
         parameters: { },
         headers: { },
         data: ""
       };
-      roomManagementRestClient.methods.createRoom(args, function (data, response) {
-        tempRoomId= data.id;
+      roomManagementRestClient.methods.createRoom(argsCreateRoom, function (dataCreateRoom) {
 
-        var argsGetusersInRoom = {
+        tempRoomId= dataCreateRoom.id;
+
+        var argsGetusers = {
           path: { roomId: tempRoomId },
           parameters: { },
           headers: { },
           data: ""
         };
-        roomManagementRestClient.methods.getUsersInRoom(argsGetusersInRoom, function (data, response) {
-            usersInRoom = data;
+        roomManagementRestClient.methods.getUsersInRoom(argsGetusers, function (dataUsersInRoom) {
+            usersInRoom = dataUsersInRoom;
             resolve({
               state: states.assigned,
               roomId: tempRoomId,
@@ -89,12 +89,12 @@ var join = function (data) {
     if (validate) {
       //usersInRoom.push(data);
       var argsAddUserToRoom = {
-        path: { roomId: tempRoomId, userId: playerId },
+        path: { roomId: tempRoomId, userId: data.playerId },
         parameters: { },
         headers: { },
         data: ""
       };
-      roomManagementRestClient.methods.addUserToRoom(argsAddUserToRoom, function (data, response) {
+      roomManagementRestClient.methods.addUserToRoom(argsAddUserToRoom, function () {
         logger.info('User joined');
         resolve(validate);
       });
@@ -114,7 +114,7 @@ var removeByDisconnection = function (id) {
         headers: { },
         data: ""
       };
-      roomManagementRestClient.methods.removeUserFromRoom(argsRemoveUserFromRoom, function (data, response) {
+      roomManagementRestClient.methods.removeUserFromRoom(argsRemoveUserFromRoom, function () {
         usersInRoom.splice(index, 1);
       });
     }

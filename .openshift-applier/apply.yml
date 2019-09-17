@@ -1,9 +1,9 @@
 ---
-- name: Deploy Dino Dush backend
+- name: Deploy Dino Dash backend
   hosts: app
   vars:
-    non_prod_namespace: dino-dush-non-prod
-    prod_namespace: dino-dush-prod
+    non_prod_namespace: dino-dash-non-prod
+    prod_namespace: dino-dash-prod
   tasks:
   - include_vars: "{{ inventory_dir }}/../encrypted-vars.yml"
   - include_role:

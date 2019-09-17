@@ -1,3 +1,4 @@
 node_modules/
 .vscode/
 report.xml
+.openshift-applier/encrypted-vars.yml
