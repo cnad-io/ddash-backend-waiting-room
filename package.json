@@ -26,6 +26,7 @@
   "homepage": "https://github.com/cnad-io/wsao-1-back#readme",
   "dependencies": {
     "bluebird": "^3.5.5",
+    "node-rest-client": "^3.1.0",
     "pino": "^5.12.6",
     "pino-pretty": "^3.2.0",
     "redis": "^2.8.0",
