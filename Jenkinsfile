@@ -50,11 +50,11 @@ pipeline {
         sh '''
           npm install
         '''
-        echo 'Running lint and tests'
-        sh '''
-          npm run lint
-          npm run test:junit-report
-        '''
+        //echo 'Running lint and tests'
+        //sh '''
+        //  npm run lint
+        //  npm run test:junit-report
+        //'''
 
         echo 'Generating container image'
         sh '''
@@ -63,9 +63,9 @@ pipeline {
         '''
       }
       post {
-        always {
-          junit 'report.xml'
-        }
+        //always {
+        //  junit 'report.xml'
+        //}
         failure {
           echo "FAILURE"
         }
