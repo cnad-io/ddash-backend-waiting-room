@@ -13,32 +13,6 @@ pipeline {
     timeout(time: 20, unit: 'MINUTES')
   }
   stages {
-    stage("Prepare B/G Deploy") {
-      agent {
-        node {
-          label "master"
-        }
-      }
-      when {
-        expression { GIT_BRANCH ==~ /(.*master)/ }
-      }
-      steps {
-        script {
-          echo 'Get active mode'
-          env.ACTIVE_MODE = sh (
-            script : 'oc get route ${APP_NAME} -o jsonpath="{ .spec.to.name }" -n ${PROD_NAMESPACE}',
-            returnStdout: true
-          ).trim().replace("${APP_NAME}-", "")
-          echo "Active mode: ${ACTIVE_MODE}"
-          if ("${ACTIVE_MODE}" == 'blue') {
-            env.NOT_ACTIVE_MODE = 'green'
-          } else {
-            env.NOT_ACTIVE_MODE = 'blue'
-          }
-          echo "Not Active mode: ${NOT_ACTIVE_MODE}"
-        }
-      }
-    }
     stage("Test and Build code") {
       agent {
         node {
@@ -100,6 +74,32 @@ pipeline {
           verifyReplicaCount: 'true',
           waitTime: '',
           waitUnit: 'sec'
+      }
+    }
+    stage("Prepare B/G Deploy") {
+      agent {
+        node {
+          label "master"
+        }
+      }
+      when {
+        expression { GIT_BRANCH ==~ /(.*master)/ }
+      }
+      steps {
+        script {
+          echo 'Get active mode'
+          env.ACTIVE_MODE = sh (
+            script : 'oc get route ${APP_NAME} -o jsonpath="{ .spec.to.name }" -n ${PROD_NAMESPACE}',
+            returnStdout: true
+          ).trim().replace("${APP_NAME}-", "")
+          echo "Active mode: ${ACTIVE_MODE}"
+          if ("${ACTIVE_MODE}" == 'blue') {
+            env.NOT_ACTIVE_MODE = 'green'
+          } else {
+            env.NOT_ACTIVE_MODE = 'blue'
+          }
+          echo "Not Active mode: ${NOT_ACTIVE_MODE}"
+        }
       }
     }
     stage("B/G Deploy Prod") {
@@ -198,6 +198,10 @@ pipeline {
       }
       steps {
         script {
+          echo 'Set balance configuration'
+          sh '''
+            oc set route-backends ${APP_NAME} ${APP_NAME}-${NOT_ACTIVE_MODE}=100 -n ${PROD_NAMESPACE}
+          '''
           echo 'Idle older deployment'
           try {
             sh 'oc idle ${APP_NAME}-${ACTIVE_MODE} -n ${PROD_NAMESPACE}'
