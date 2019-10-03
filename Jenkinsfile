@@ -33,7 +33,7 @@ pipeline {
         echo 'Generating container image'
         sh '''
           oc patch bc ${APP_NAME} -p "{\\"spec\\":{\\"output\\":{\\"to\\":{\\"kind\\":\\"ImageStreamTag\\",\\"name\\":\\"${APP_NAME}:${JENKINS_TAG}\\"}}}}" -n ${NON_PROD_NAMESPACE}
-          oc start-build ${APP_NAME} --follow -n ${NON_PROD_NAMESPACE}
+          oc start-build ${APP_NAME} -w -n ${NON_PROD_NAMESPACE}
         '''
       }
       post {
