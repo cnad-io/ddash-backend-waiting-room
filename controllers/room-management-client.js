@@ -8,10 +8,12 @@ var logger = require('pino')({
 var Promise = require('bluebird');
 
 var states = require('../models/states');
-var Client = require('node-rest-client').Client;
+//var nodeRestClient = require('node-rest-client');
 
-var roomManagementRestClient = new Client();
-var roomManagement = process.env.ROOM_MANAGEMENT_URL || 'http://room-management:8080'
+var ClientRest = require('node-rest-client').Client;
+
+var roomManagementRestClient = new ClientRest();
+var roomManagement = process.env.ROOM_MANAGEMENT_URL || 'http://room-management:3000'
 
 /* eslint-disable no-template-curly-in-string */
 roomManagementRestClient.registerMethod("getRoom", roomManagement+"/api/room/${roomId}", "GET");
@@ -20,15 +22,14 @@ roomManagementRestClient.registerMethod("addUserToRoom", roomManagement+"/api/ro
 roomManagementRestClient.registerMethod("removeUserFromRoom", roomManagement+"/api/room/${roomId}/removeUser/${userId}", "DELETE");
 roomManagementRestClient.registerMethod("getUsersInRoom", roomManagement+"/api/room/${roomId}/users", "GET");
 
-var tempRoomId = null;
-var usersInRoom = [];
+//var tempRoomId = null;
+//var usersInRoom = [];
 
 
+var getRoom = function (id){
 
-
-var getRoom = function(id){
-
-  return new Promise(function(){
+  return new Promise(function (){
+    logger.info('get user of room ' + id);
 
   });
 
@@ -36,8 +37,8 @@ var getRoom = function(id){
 };
 
 
-var createRoom = function(){
-  return new Promise(function(resolve){
+var createRoom = function (){
+  return new Promise(function (resolve){
     var args = {
       path: { },
       parameters: { },
@@ -45,15 +46,16 @@ var createRoom = function(){
       data: ""
     };
     roomManagementRestClient.methods.createRoom(args, function (dataCreateRoom) {
-      resolve({id : dataCreateRoom.id });
+
+      logger.info('data' , dataCreateRoom )
+      resolve({id : dataCreateRoom.id});
     });
-    
   });
 };
 
-var addUserToRoom = function(roomId,userId){
+var addUserToRoom = function (roomId,userId){
 
-  return new Promise(function(resolve,reject){
+  return new Promise(function (resolve){
 
     var args = {
       path: { roomId: roomId, userId: userId },
@@ -70,9 +72,9 @@ var addUserToRoom = function(roomId,userId){
 
 };
 
-var removeUserFromRoom = function(roomId,userId){
+var removeUserFromRoom = function (roomId,userId){
 
-  return new Promise(function(resolve){
+  return new Promise(function (resolve){
     var argsRemoveUserFromRoom = {
       path: { roomId: roomId, userId: userId },
       parameters: { },
@@ -87,9 +89,9 @@ var removeUserFromRoom = function(roomId,userId){
 
 };
 
-var getUsersInRoom = function(id){
+var getUsersInRoom = function (id){
 
-  return new Promise(function(resolve){
+  return new Promise(function (resolve){
     var args = {
       path: { roomId: id },
       parameters: { },
@@ -110,9 +112,6 @@ var getUsersInRoom = function(id){
 
 
 };
-
-
-
 
 
 module.exports = {

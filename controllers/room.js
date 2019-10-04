@@ -7,31 +7,31 @@ var logger = require('pino')({
 var Promise = require('bluebird');
 var player = require('./player');
 //var uuidv1 = require('uuid/v1');
-var states = require('../models/states');
+//var states = require('../models/states');
 
 var roomManagementClient = require('./room-management-client');
 
 var tempRoomId = null;
-var usersInRoom = [];
+//var usersInRoom = [];
 
 var get = function () {
   logger.info('Get room requested');
   return new Promise(function (resolve) {
    if (tempRoomId){
-    roomManagementClient.getUsersInRoom(tempRoomId).then(function(data){
+    roomManagementClient.getUsersInRoom(tempRoomId).then(function (data){
       //usersInRoom = dataUsersInRoom;
       resolve(data);
 
     });
     } else {
-      roomManagementClient.createRoom().then(function(data){
+      roomManagementClient.createRoom().then(function (data){
 
         tempRoomId= data.id;
-        roomManagementClient.getUsersInRoom(tempRoomId).then(function(usersinroom){
+        roomManagementClient.getUsersInRoom(tempRoomId).then(function (usersinroom){
           resolve(usersinroom);
         });
 
-      }); 
+      });
     }
   });
 };
@@ -39,7 +39,7 @@ var get = function () {
 var clean = function () {
   logger.info('Clean room requested');
   return new Promise(function (resolve) {
-    usersInRoom = [];
+    //usersInRoom = [];
     tempRoomId = null;
     resolve();
   });
@@ -53,24 +53,23 @@ var join = function (data) {
     if (validate) {
       logger.info('validated');
 
-      if (!tempRoomId){
+      if (tempRoomId){
+        logger.info('Adding user '+data.playerId+' to room');
+
+        roomManagementClient.addUserToRoom(tempRoomId, data.playerId).then(function (){
+          logger.info('User joined');
+          resolve(validate);
+        });
+      } else {
         logger.info('tempRoomId is null');
 
-        roomManagementClient.createRoom().then(function(data){
-          tempRoomId= data.id;
-          logger.info('Adding user '+data.playerId+' to room');
-          roomManagementClient.addUserToRoom(tempRoomId, data.playerId).then(function(){
+        roomManagementClient.createRoom().then(function (createdRoom){
+          tempRoomId= createdRoom.id;
+          logger.info('Adding user '+data.playerId+' to room ' +  createdRoom.id);
+          roomManagementClient.addUserToRoom(tempRoomId, data.playerId).then(function (){
             resolve();
           });
 
-        });       
-  
-      }else{
-        logger.info('Adding user '+data.playerId+' to room');
-
-        roomManagementClient.addUserToRoom(tempRoomId, data.playerId).then(function(){
-          logger.info('User joined');
-          resolve(validate);
         });
       }
       //usersInRoom.push(data);
