@@ -26,7 +26,7 @@ module.exports = function (io) {
       })
       .then(function (room) {
         io.to('waiting').emit(events.public.out.playersRoom, room.playerList);
-        var maxPlayers = parseInt(process.env.MAX_WAITING_PLAYES || '4', 10);
+        var maxPlayers = parseInt(process.env.MAX_WAITING_PLAYErS || '2', 10);
         logger.trace('Limit of players by room', maxPlayers);
         if (io.sockets.adapter.rooms.waiting.length >= maxPlayers) {
           io.to('waiting').emit(events.public.out.roomAssigned, room);

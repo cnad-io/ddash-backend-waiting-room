@@ -48,6 +48,8 @@ objects:
     metadata:
       annotations:
         template.alpha.openshift.io/wait-for-ready: 'true'
+      labels:
+        app: '${APP_NAME}'
       name: '${DATABASE_SERVICE_NAME}'
     spec:
       replicas: 1
@@ -138,3 +140,6 @@ parameters:
   - name: REDIS_VERSION
     required: true
     value: '3.2'
+  - name: APP_NAME
+    require: true
+    value: waiting-room
