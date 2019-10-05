@@ -20,10 +20,10 @@ pipeline {
         }
       }
       steps {
-        echo 'Running install'
-        sh '''
-          npm install
-        '''
+        //echo 'Running install'
+        //sh '''
+        //  npm install
+        //'''
         //echo 'Running lint and tests'
         //sh '''
         //  npm run lint
