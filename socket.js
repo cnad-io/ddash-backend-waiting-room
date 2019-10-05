@@ -12,7 +12,7 @@ module.exports = function (io) {
     logger.info('New connection');
     socket.on(events.public.in.join, function (data) {
       var player = {
-        playerId: socket.id,
+        playerId: data.nickname,
         socketId: socket.id,
         connected: true,
         nickname: data.nickname
@@ -30,6 +30,7 @@ module.exports = function (io) {
         logger.trace('Limit of players by room', maxPlayers);
         if (io.sockets.adapter.rooms.waiting.length >= maxPlayers) {
           io.to('waiting').emit(events.public.out.roomAssigned, room);
+          roomController.clean();
         }
       })
       .catch(function () {

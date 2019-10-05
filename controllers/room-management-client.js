@@ -47,18 +47,18 @@ var createRoom = function (){
     };
     roomManagementRestClient.methods.createRoom(args, function (dataCreateRoom) {
 
-      logger.info('data' , dataCreateRoom )
+      logger.info('data' , dataCreateRoom)
       resolve({id : dataCreateRoom.id});
     });
   });
 };
 
-var addUserToRoom = function (roomId,userId){
+var addUserToRoom = function (roomId,nickname){
 
   return new Promise(function (resolve){
 
     var args = {
-      path: { roomId: roomId, userId: userId },
+      path: { roomId: roomId, userId: nickname },
       parameters: { },
       headers: { },
       data: ""

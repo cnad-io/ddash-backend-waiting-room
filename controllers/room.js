@@ -54,7 +54,7 @@ var join = function (data) {
       logger.info('validated');
 
       if (tempRoomId){
-        logger.info('Adding user '+data.playerId+' to room');
+        logger.info('Adding user '+data.playerId+' to room' + tempRoomId);
 
         roomManagementClient.addUserToRoom(tempRoomId, data.playerId).then(function (){
           logger.info('User joined');
