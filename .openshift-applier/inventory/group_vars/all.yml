@@ -45,6 +45,14 @@ openshift_cluster_content:
       - waiting-room
       - unique-build
       - build
+    - name: jenkins-deploy
+      template: "{{ inventory_dir }}/../templates/waiting-room/jenkins-template.yml"
+      params: "{{ inventory_dir }}/../params/waiting-room/pipeline-cd"
+      namespace: "{{ non_prod_namespace }}"
+      tags:
+      - jenkins-deploy
+      - unique-build
+      - build
 - object: deploy-non-prod
   content:
     - name: service
