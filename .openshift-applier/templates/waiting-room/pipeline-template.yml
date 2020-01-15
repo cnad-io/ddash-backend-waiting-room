@@ -60,6 +60,8 @@ objects:
       name: ${JENKINS_SERVICE_NAME}
 - apiVersion: v1
   kind: DeploymentConfig
+  labels:
+    app: ${JENKINS_SERVICE_NAME}
   metadata:
     annotations:
       template.alpha.openshift.io/wait-for-ready: "true"
