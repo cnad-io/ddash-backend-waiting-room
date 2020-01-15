@@ -63,16 +63,16 @@ objects:
 parameters:
 - name: CPU_REQUEST
   required: true
-  value: 100m
+  value: 50m
 - name: CPU_LIMIT
   required: true
   value: "500m"
 - name: MEMORY_REQUEST
   required: true
-  value: 100Mi
+  value: 50Mi
 - name: MEMORY_LIMIT
   required: true
-  value: 500Mi
+  value: 600Mi
 - name: APP_NAME
   required: true
   value: waiting-room
