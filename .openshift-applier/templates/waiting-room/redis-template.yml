@@ -95,6 +95,10 @@ objects:
               resources:
                 limits:
                   memory: '${MEMORY_LIMIT}'
+                  cpu: '${CPU_LIMIT}'
+                requests:
+                  cpu: '${CPU_REQUEST}'
+                  memory: '${MEMORY_REQUEST}'
               securityContext:
                 capabilities: {}
                 privileged: false
@@ -124,7 +128,16 @@ objects:
 parameters:
   - name: MEMORY_LIMIT
     required: true
-    value: 512Mi
+    value: 256Mi
+  - name: MEMORY_REQUEST
+    required: true
+    value: 50Mi
+  - name: CPU_REQUEST
+    required: true
+    value: 50m
+  - name: CPU_LIMIT
+    required: true
+    value: 256m
   - name: NAMESPACE
     value: openshift
   - name: DATABASE_SERVICE_NAME

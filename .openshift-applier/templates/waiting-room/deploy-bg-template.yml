@@ -171,10 +171,10 @@ parameters:
   value: 50m
 - name: CPU_LIMIT
   required: true
-  value: 200m
+  value: 100m
 - name: MEMORY_REQUEST
   required: true
-  value: 100Mi
+  value: 50Mi
 - name: MEMORY_LIMIT
   required: true
   value: 200Mi

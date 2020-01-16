@@ -77,7 +77,11 @@ objects:
             timeoutSeconds: 240
           resources:
             limits:
-              memory: ${MEMORY_LIMIT}
+              memory: '${MEMORY_LIMIT}'
+              cpu: '${CPU_LIMIT}'
+            requests:
+              cpu: '${CPU_REQUEST}'
+              memory: '${MEMORY_REQUEST}'
           securityContext:
             capabilities: {}
             privileged: false
@@ -163,7 +167,16 @@ parameters:
 - name: ENABLE_OAUTH
   value: "true"
 - name: MEMORY_LIMIT
-  value: 1Gi
+  value: 512Mi
+- name: MEMORY_REQUEST
+  required: true
+  value: 128Mi
+- name: CPU_REQUEST
+  required: true
+  value: 100m
+- name: CPU_LIMIT
+  required: true
+  value: 256m
 - name: NAMESPACE
   value: openshift
 - name: DISABLE_ADMINISTRATIVE_MONITORS
