@@ -167,7 +167,7 @@ parameters:
 - name: ENABLE_OAUTH
   value: "true"
 - name: MEMORY_LIMIT
-  value: 512Mi
+  value: 756Mi
 - name: MEMORY_REQUEST
   required: true
   value: 128Mi
