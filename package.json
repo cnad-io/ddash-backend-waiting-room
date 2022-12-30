@@ -40,7 +40,7 @@
     "chai-http": "^4.3.0",
     "eslint": "^5.16.0",
     "husky": "^2.4.1",
-    "mocha": "^6.2.0",
+    "mocha": "^10.2.0",
     "mocha-junit-reporter": "^1.23.1",
     "socket.io-client": "^2.2.0"
   },
